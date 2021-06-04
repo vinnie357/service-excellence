@@ -12,6 +12,10 @@ includes:
 - waypoint cli
 - gcloud cli
 
+## running
+
+  - [gcp](./terraform/gcp/readme.md)
+
 ## Development
 
 don't forget to add your git user config

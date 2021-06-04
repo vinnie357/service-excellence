@@ -26,6 +26,6 @@ setup && info
 
 ## configure waypoint
 
-  [waypoint](../waypoint/gcp/readme.md)
+  [waypoint](../../waypoint/gcp/readme.md)
 
 ## deploy apps
