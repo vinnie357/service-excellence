@@ -1,5 +1,6 @@
-# repository_template
-base repository template using f5-devops-containers
+# service-excellence
+demos with k8s, nginx kic/service mesh , and hasicorp waypoint.
+
 ---
 
 includes:
@@ -8,6 +9,9 @@ includes:
 - docker
 - terraform
 - terraform-docs
+- waypoint cli
+- gcloud cli
+
 ## Development
 
 don't forget to add your git user config

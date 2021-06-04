@@ -11,7 +11,7 @@ ENV USERNAME="f5-devops" \
     GOPATH="/go" \
     GOVERSION="1.15.6" \
     PRECOMMITVERSION="latest" \
-    TERRAFORMVERSION="0.14.7" \
+    TERRAFORMVERSION="0.14.11" \
     TERRAFORMDOCSVERSION="0.9.1" \
     ANSIBLEVERSION="2.10.5" \
     VESCTL_VERSION="0.2.15" \
@@ -33,9 +33,11 @@ RUN set -ex \
     && bash /tmp/scripts/terraform-docs-debian.sh "${TERRAFORMDOCSVERSION}"
 
 # add extras
-# RUN set -ex \
-    # https://github.com/vinnie357/devcontainers/tree/main/scripts-library/ubuntu
-    # && bash /tmp/scripts/my-script.sh
+RUN set -ex \
+    #https://github.com/vinnie357/devcontainers/tree/main/scripts-library/ubuntu
+    && bash /tmp/scripts/gcloud-debian.sh \
+    && bash /tmp/scripts/waypoint-cli-debian.sh \
+    && bash /tmp/scripts/kubectl-helm-debian.sh
 
 # Clean up
 RUN set -ex \

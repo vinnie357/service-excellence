@@ -1,3 +1,13 @@
 fileignoreconfig:
 - filename: .devcontainer/scripts/docker-debian.sh
   checksum: 3109be3be53c3dad4a7cfcd0c07c87cd41ab26cc24e1fd4110fe69ecb955ae9a
+- filename: terraform/gcp/secrets.tf
+  checksum: ba67e76198036ffcc4a2255731431f0099177858fa4f1467e3458c8ca29dbad4
+- filename: terraform/gcp/scripts/deploy_kic.sh
+  checksum: fdf99fe9be3140975f7af734e585d310ed7d9c7a29e4aa3da8c62e1679b70d92
+- filename: terraform/gcp/main.tf
+  checksum: 1d5f99fb716cd23f75d2c2cf407934ac63d057aea0ebe2b16d22c002c40e1192
+- filename: .devcontainer/scripts/gcloud-debian.sh
+  checksum: f6435a020a039c63428853691e911b2e559ed2ed3423b1f6edfda926aa270aa9
+- filename: terraform/gcp/templates/kic/nginx-ingress-install.yml.tpl
+  checksum: 18261d4f6969a46fb62cd9897682efb4b37065735f409dbd705487c98339b02c

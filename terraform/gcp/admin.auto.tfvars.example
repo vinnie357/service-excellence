@@ -1,0 +1,14 @@
+# project
+projectPrefix = "services"
+buildSuffix   = "ape-quests"
+gcpProjectId  = "my-project-id"
+gcpRegion     = "us-east1"
+gcpZone       = "us-east1-b"
+# nginx
+nginxCert = <<EOT
+fdasfdasfsas
+EOT
+nginxKey  = <<EOT
+fdsafadsfdsas
+EOT
+#https://github.com/hashicorp/terraform/issues/4835#issuecomment-313280534
