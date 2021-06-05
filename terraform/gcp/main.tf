@@ -4,16 +4,53 @@ provider "google" {
   region  = var.gcpRegion
   zone    = var.gcpZone
 }
-
-// New Network
-module "google_network" {
-  source       = "git::https://github.com/f5devcentral/f5-digital-customer-engagement-center//modules/google/terraform/network/min"
-  gcpProjectId = var.gcpProjectId
-  gcpRegion    = var.gcpRegion
-  buildSuffix  = var.buildSuffix
+provider "google-beta" {
 }
 
+// New Network
+module "gcp-network" {
+  source       = "terraform-google-modules/network/google"
+  version      = "~> 2.5"
+  project_id   = var.gcpProjectId
+  network_name = local.network_name
+
+  subnets = [
+    {
+      subnet_name   = local.subnet_name
+      subnet_ip     = "10.0.0.0/17"
+      subnet_region = var.gcpRegion
+    },
+    {
+      subnet_name   = local.master_auth_subnetwork
+      subnet_ip     = "10.60.0.0/17"
+      subnet_region = var.gcpRegion
+    },
+  ]
+
+  secondary_ranges = {
+    (local.subnet_name) = [
+      {
+        range_name    = local.pods_range_name
+        ip_cidr_range = "192.168.0.0/18"
+      },
+      {
+        range_name    = local.svc_range_name
+        ip_cidr_range = "192.168.64.0/18"
+      },
+    ]
+  }
+}
 // gke cluster
+#https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/blob/master/examples/safer_cluster/main.tf
+locals {
+  cluster_type           = "safer-cluster"
+  network_name           = "${var.projectPrefix}-safer-cluster-network-${var.buildSuffix}"
+  subnet_name            = "${var.projectPrefix}-safer-cluster-subnet-${var.buildSuffix}"
+  master_auth_subnetwork = "${var.projectPrefix}-safer-cluster-master-subnet-${var.buildSuffix}"
+  pods_range_name        = "${var.projectPrefix}-ip-range-pods-${var.buildSuffix}"
+  svc_range_name         = "${var.projectPrefix}-ip-range-svc-${var.buildSuffix}"
+  subnet_names           = [for subnet_self_link in module.gcp-network.subnets_self_links : split("/", subnet_self_link)[length(split("/", subnet_self_link)) - 1]]
+}
 module "gke-sa" {
   source       = "terraform-google-modules/service-accounts/google"
   version      = "3.0.1"
@@ -31,38 +68,70 @@ module "gke-sa" {
   ]
   generate_keys = false
 }
+data "google_client_config" "default" {}
 
-resource "google_container_cluster" "primary" {
-  name               = "${var.projectPrefix}-gke-cluster-${var.buildSuffix}"
-  location           = var.gcpZone
-  initial_node_count = 3
-  network            = module.google_network.vpcs["public"].id
-  subnetwork         = module.google_network.subnets["public"].id
-  ip_allocation_policy {}
-  node_config {
-    preemptible = true
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = module.gke-sa.email
-    oauth_scopes = [
-      #https://cloud.google.com/container-registry/docs/access-control
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-      "https://www.googleapis.com/auth/servicecontrol",
-      "https://www.googleapis.com/auth/service.management.readonly",
-      "https://www.googleapis.com/auth/trace.append",
-      "https://www.googleapis.com/auth/compute",
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-    labels = {
-      env = "development"
+provider "kubernetes" {
+  host                   = "https://${module.gke.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+}
+
+module "gke" {
+  source                     = "terraform-google-modules/kubernetes-engine/google//modules/safer-cluster"
+  project_id                 = var.gcpProjectId
+  name                       = format("%s-cluster-%s", var.projectPrefix, var.buildSuffix)
+  description                = format("Application cluster(%s)", var.projectPrefix)
+  regional                   = true
+  region                     = var.gcpRegion
+  network                    = module.gcp-network.network_name
+  subnetwork                 = local.subnet_names[index(module.gcp-network.subnets_names, local.subnet_name)]
+  ip_range_pods              = local.pods_range_name
+  ip_range_services          = local.svc_range_name
+  master_ipv4_cidr_block     = var.masterCidr
+  cluster_resource_labels    = var.labels
+  add_cluster_firewall_rules = false
+  firewall_inbound_ports     = ["9443", "15017"]
+  master_authorized_networks = [
+    {
+      cidr_block   = "10.60.0.0/17"
+      display_name = "VPC"
+    },
+    {
+      cidr_block   = var.adminSourceAddress[0]
+      display_name = format("admin %s", var.projectPrefix)
+    },
+  ]
+  grant_registry_access              = true
+  istio                              = false
+  cloudrun                           = false
+  config_connector                   = false
+  dns_cache                          = false
+  enable_intranode_visibility        = false
+  enable_private_endpoint            = false
+  enable_resource_consumption_export = false
+  notification_config_topic          = google_pubsub_topic.updates.id
+  # nodes
+  compute_engine_service_account = module.gke-sa.email
+  node_pools = [
+    {
+      name          = format("%s-pool", var.projectPrefix)
+      min_count     = 1
+      max_count     = 3
+      auto_upgrade  = true
+      node_metadata = "GKE_METADATA_SERVER"
     }
-    tags = ["k8s", "development"]
+  ]
+  node_pools_labels = {
+    all = var.labels
   }
-  timeouts {
-    create = "30m"
-    update = "40m"
+  node_pools_tags = {
+    all = var.tags
   }
+}
+
+resource "google_pubsub_topic" "updates" {
+  name    = "cluster-updates-${var.buildSuffix}"
+  project = var.gcpProjectId
 }
 
 // default cert for ingress

@@ -11,3 +11,5 @@ fileignoreconfig:
   checksum: f6435a020a039c63428853691e911b2e559ed2ed3423b1f6edfda926aa270aa9
 - filename: terraform/gcp/templates/kic/nginx-ingress-install.yml.tpl
   checksum: 18261d4f6969a46fb62cd9897682efb4b37065735f409dbd705487c98339b02c
+- filename: terraform/gcp/variables.tf
+  checksum: 68ca9050a7e4e9dd71bf46985e4e87be162ca9664c7bc4a4f4f9e63f34ebf67b
