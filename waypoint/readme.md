@@ -1,5 +1,8 @@
+# waypoint fun
 #https://learn.hashicorp.com/tutorials/waypoint/get-started-kubernetes
 
+
+## setup
 ```bash
 git clone https://github.com/hashicorp/waypoint-examples.git
 
@@ -12,7 +15,9 @@ waypoint install --platform=kubernetes -accept-tos
 kubectl  get svc waypoint -o json | jq -r .status.loadBalancer.ingress[0].ip
 waypointserver=$(kubectl get svc waypoint -o json | jq -r .status.loadBalancer.ingress[0].ip)
 waypoint server config-set -advertise-addr=$waypointserver:9701
-
+```
+## gcp example
+```bash
 # set your project in example
 GCP_PROJECT=$(gcloud config get-value project)
 
@@ -37,3 +42,5 @@ waypoint up
 
 waypoint destroy -auto-approve
 ```
+## azure example
+## aws example

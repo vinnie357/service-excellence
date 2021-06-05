@@ -1,4 +1,4 @@
-function deploy_kic {
+function deploy_kic_gcp {
 # deploys kic with gke
 # example command:
 # deploy_kic
@@ -78,5 +78,45 @@ kubectl get pods -n nginx-ingress -o wide
 #kubectl logs -f -lapp=nginx-ingress -n nginx-ingress
 # finished
 cd $dir
+# deploy apps
+cp -f ./templates/kic/arcadia.yml.tpl ./arcadia.yml
+kubectl apply -f ./arcadia.yml
+kubectl get svc
+nginx_ingress=$(kubectl get svc nginx-ingress --namespace=nginx-ingress -o json | jq -r .status.loadBalancer.ingress[0].ip)
+# deploy ingress
+cat << EOF | kubectl apply -f -
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: arcadia
+spec:
+  host: $nginx_ingress
+  upstreams:
+  - name: arcadia-main
+    service: arcadia-main
+    port: 80
+  - name: arcadia-app2
+    service: arcadia-app2
+    port: 80
+  - name: arcadia-app3
+    service: arcadia-app3
+    port: 80
+  routes:
+  - path: /
+    action:
+      pass: arcadia-main
+  - path: /app2
+    action:
+      pass: arcadia-app2
+  - path: /app3
+    action:
+      pass: arcadia-app3
+EOF
+# done
+dashboard_nginx_ingress=$(kubectl get svc dashboard-nginx-ingress --namespace=nginx-ingress -o json | jq -r .status.loadBalancer.ingress[0].ip)
+echo "dashboard:"
+echo "http://$dashboard_nginx_ingress/dashboard.html"
+echo "app:"
+echo "http://$nginx_ingress/"
 echo "====Done===="
 }

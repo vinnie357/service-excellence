@@ -11,3 +11,25 @@ fileignoreconfig:
   checksum: f6435a020a039c63428853691e911b2e559ed2ed3423b1f6edfda926aa270aa9
 - filename: terraform/gcp/templates/kic/nginx-ingress-install.yml.tpl
   checksum: 18261d4f6969a46fb62cd9897682efb4b37065735f409dbd705487c98339b02c
+- filename: .devcontainer/scripts/azcli-debian.sh
+  checksum: e783074cc0c0cbb11a3914d811f5aa6527f423ce7d2bf9957daa17da02defed6
+- filename: terraform/aws/admin.auto.tfvars.example
+  checksum: 2c16e58e638f113a93e9b2c36f695210c74f75fdffff9b42025b3efb56f12fbd
+- filename: terraform/azure/scripts/demo_azure.sh
+  checksum: d8930c99e2a459ed3452661c4d0cf5a121a26942a35ba4e4affc69b01d39f50d
+- filename: terraform/aws/scripts/deploy_kic_aws.sh
+  checksum: 7408676e848c3886489d47ca2a0a8bccf78cde5e27e01b919ef58b0ca8ff18f5
+- filename: terraform/aws/main.tf
+  checksum: 48b1a97bdd2192056edae402c5e4bc3f0ab7afbb85e395eff2ce0623a5cee126
+- filename: terraform/azure/secrets.tf
+  checksum: 2502d9c7a7bf48dea550e7b7ee9d218fdf8d88ebecdbf7a7e1e226cfaf27810a
+- filename: terraform/azure/admin.auto.tfvars.example
+  checksum: 201c431086ec3c49426c400f974f596e61a87b1f55b818725fb3191a349f2612
+- filename: terraform/gcp/scripts/deploy_kic.sh
+  checksum: 1c99019924ea0badf8a014f51992d726ffdbd9c52ac47e8c869fae3265abeb20
+- filename: terraform/azure/main.tf
+  checksum: 8dd353e3e8f5a34f30b6495a5511039a41fbd20afbddbd6be48ac8e1e8b0a4f2
+- filename: terraform/aws/templates/kic/nginx-ingress-install.yml.tpl
+  checksum: 6c19bd8e74af43f1bccb69dbac03e9508badc6610664fa26882c13f4418b3a2a
+- filename: terraform/azure/templates/kic/nginx-ingress-install.yml.tpl
+  checksum: acf8d83b03cc2aa8faa8ff6b954d7c3672a60af7ab147ec1ccea9e8c66352533

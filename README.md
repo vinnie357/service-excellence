@@ -3,7 +3,7 @@ demos with k8s, nginx kic/service mesh , and hasicorp waypoint.
 
 ---
 
-includes:
+devcontainer includes:
 - pre-commit
 - go
 - docker
@@ -11,10 +11,16 @@ includes:
 - terraform-docs
 - waypoint cli
 - gcloud cli
+- aws cli
+- azure cli
+- kubectl
+- helm
 
 ## running
 
   - [gcp](./terraform/gcp/readme.md)
+  - [azure](./terraform/azure/readme.md)
+  - [aws](./terraform/aws/readme.md)
 
 ## Development
 

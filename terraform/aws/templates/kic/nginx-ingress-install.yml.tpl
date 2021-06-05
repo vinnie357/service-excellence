@@ -131,18 +131,17 @@ type: kubernetes.io/tls
 data:
   tls.crt: -defaultCert-
   tls.key: -defaultKey-
-
 ---
 
- kind: ConfigMap
- apiVersion: v1
- metadata:
-   name: nginx-config
-   namespace: nginx-ingress
- data:
-   proxy-protocol: "False"
-   real-ip-header: "proxy_protocol"
-   set-real-ip-from: "0.0.0.0/0"
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: nginx-ingress
+data:
+  proxy-protocol: "True"
+  real-ip-header: "proxy_protocol"
+  set-real-ip-from: "0.0.0.0/0"
 
 ---
 
@@ -1788,7 +1787,7 @@ spec:
     spec:
       serviceAccountName: nginx-ingress
       containers:
-      - image: -image-
+      - image: $ecrRepositoryURL:edge
         imagePullPolicy: Always
         name: nginx-plus-ingress
         ports:
@@ -1798,10 +1797,8 @@ spec:
           containerPort: 443
         - name: readiness-port
           containerPort: 8081
-        - name: prometheus
-          containerPort: 9113
-        - name: dashboard
-          containerPort: 8080
+       #- name: prometheus
+         #containerPort: 9113
         readinessProbe:
           httpGet:
             path: /nginx-ready
@@ -1829,12 +1826,12 @@ spec:
           - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
           - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
           - -nginx-status-allow-cidrs=0.0.0.0/0
-          - -enable-prometheus-metrics
-         #- -enable-preview-policies
+          - -enable-preview-policies
          #- -enable-app-protect
          #- -v=3 # Enables extensive logging. Useful for troubleshooting.
          #- -report-ingress-status
          #- -external-service=nginx-ingress
+         #- -enable-prometheus-metrics
          #- -global-configuration=$(POD_NAMESPACE)/nginx-configuration
 
 ---

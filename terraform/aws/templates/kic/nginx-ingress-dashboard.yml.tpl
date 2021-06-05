@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: dashboard-nginx-ingress
   namespace: nginx-ingress
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
 spec:
   type: LoadBalancer
   ports:
