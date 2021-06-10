@@ -8,6 +8,7 @@ then
     rm ./nginx-ingress-install.yml
     rm ./nginx-ingress-dashboard.yml
     rm ./arcadia.yml
+    rm ./nsm-visibility-*.yml
 else
     echo "canceling"
 fi

@@ -5,6 +5,7 @@ nginx-repo.crt
 nginx-repo.key
 nginx-ingress-install.yml
 nginx-ingress-dashboard.yml
+nsm-visibility-*.yml
 arcadia.yml
 nginx-meshctl_linux.gz
 waypoint-examples

@@ -33,3 +33,5 @@ fileignoreconfig:
   checksum: 6c19bd8e74af43f1bccb69dbac03e9508badc6610664fa26882c13f4418b3a2a
 - filename: terraform/azure/templates/kic/nginx-ingress-install.yml.tpl
   checksum: acf8d83b03cc2aa8faa8ff6b954d7c3672a60af7ab147ec1ccea9e8c66352533
+- filename: terraform/gcp/templates/nsm/nsm-visibility-kic.yml.tpl
+  checksum: 18c0c049efa5a0f0f08b23e630f393cc7bea042e8089ae6506c275980db18344
