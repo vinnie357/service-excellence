@@ -12,17 +12,42 @@
 setup && info
 
 ```
+## deploy all
+optional
+```bash
+. init.sh && demo_gcp
+```
+## deploy each
 
-## deploy nsm
+### deploy nsm
 ```bash
 . init.sh && install_meshctl
 . init.sh && deploy_nsm
 ```
 
-## deploy kic
+### deploy kic
 ```bash
 . init.sh && deploy_kic "1.9.0"
 ```
+### configure nsm observabilty tools
+
+  ```bash
+  nsm_visibility kic example.com
+  ```
+
+  #### grab the ip of the nginx ingress service
+  ```bash
+  nginx_ingress=$(kubectl get svc nginx-ingress --namespace=nginx-ingress -o json | jq -r .status.loadBalancer.ingress[0].ip)
+  echo $nginx_ingress
+  ```
+  #### set a host or dns records for your domain, or example.com
+
+  default fqdns:
+  - grafana.example.com
+  - prometheus.example.com
+  - jaeger.example.com
+
+  #### connect with a browser of your choice
 
 ## configure waypoint
 
